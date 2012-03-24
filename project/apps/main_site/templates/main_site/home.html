@@ -7,13 +7,27 @@
 {% endcompress %}
 {% endblock %}
 
-{% block js %}{{block.super}}
+{% block js %}
+<script>
+var MAP_BASE_URL = "{{STATIC_URL}}map/tile/1.0.0/we_exist_single"
+var CSRF_TOKEN = "{% csrf_token %}";
+</script>
+{{block.super}}
 {% compress js %}
+<script src="{{STATIC_URL}}map/js/modestmaps.min.js"></script>
 <script src="{{STATIC_URL}}main_site/js/site.js"></script>
 {% endcompress %}
+
 {% endblock %}
 
 
 {% block content %}
-Artechetype loaded.
+<div class="exist_block"></div>
+<canvas id="points"></canvas>
+<div class="map" id="map"></div>
+<div class="i_exist_actions">
+	<a href="{% url main_site:i_exist %}" class="i_exist_btn" >I Exist</a>
+</div>
+<div pub-key="pub-141dae41-5126-40f9-bf3b-61e4f8676853" sub-key="sub-da7f8e66-7602-11e1-8e7f-3157f0c9d5f9" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
 {% endblock %}

@@ -2,34 +2,14 @@ Artechetype (terrible pun) is a grab-and-go starter django+js I use when making 
 
 NOTE: I'm still working on it. Don't use it quite yet.
 
-Grab it and go
-==============
 
-1. Set up your new repo, say `github.com:myusername/mynewproject.git`
 
-2. Clone artechetype into a local directory.
-	
-	```bash
-	git clone git@github.com:skoczen/artechetype.git mynewproject.git
-	```
+Map tiles
+=========
 
-3. Set `PROJECT_NAME`, `GITHUB_REPO` and any other env settings you need in `fabfile.py`
-
-4. Set up the your virtualenv, and `pip install fabric`
-
-5. Set up your remotes manually, or by use the fab helper command.
-	
-	```bash
-	fab initial_setup
-	```
-
-5. You're set. 
-	
-	```bash
-	cd project
-	./manage.py runserver
-	```
-
+```bash
+mb-util --scheme=osm we_exist.mbtiles ../project/apps/main_site/static/map/tiles
+```
 
 
 Deploying to Heroku, with AWS for static media

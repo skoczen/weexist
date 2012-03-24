@@ -12,7 +12,9 @@ django-ses
 fabric
 gunicorn
 lxml
+pubnub
 psycopg2
 salad
 south
 versiontools
+-e git+git://github.com/mapbox/mbutil.git#egg=mbutil
