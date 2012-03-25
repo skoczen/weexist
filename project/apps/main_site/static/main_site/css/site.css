@@ -27,9 +27,15 @@ body {
 	font-size: 20px;
 }
 
+<<<<<<< HEAD
 .i_exist_btn {
 	width: 316px;
 	height: 316px; 
+=======
+.button {
+	width: 100px;
+	height: 100px; 
+>>>>>>> 36f2f56ced3e33f159b4b3a796d2a8a85fa82faf
 	display: block;
 	text-decoration: none;
 	background-repeat: no-repeat;
