@@ -28,13 +28,15 @@ body {
 }
 
 .button {
-	width: 100px;
-	height: 100px; 
+	width: 80px;
+	height: 80px; 
 	display: block;
 	text-decoration: none;
 	background-repeat: no-repeat;
 	background-image: url(button.png);}
 
+.button:hover{
+	background-position: 0px -90px;}
+
 .button:active {
-	background-position: right; 
-	margin-left:-1px;}
+	background-position: 0px -180px;}
