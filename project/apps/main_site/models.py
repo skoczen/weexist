@@ -15,7 +15,6 @@ class Existence(models.Model):
                 "http://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=1&q=%s" % 
                 (quote_plus(self.where),)
                 )
-                
             address = eval(response.read())[0]
             self.lat = address["lat"]
             self.lon = address["lon"]

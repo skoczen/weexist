@@ -27,16 +27,17 @@ body {
 	font-size: 20px;
 }
 
-.button {
+.i_exist_btn {
 	width: 80px;
 	height: 80px; 
 	display: block;
 	text-decoration: none;
 	background-repeat: no-repeat;
-	background-image: url(button.png);}
+	background-image: url("../img/button.png");}
 
-.button:hover{
+
+.i_exist_btn:hover{
 	background-position: 0px -90px;}
 
-.button:active {
+.i_exist_btn:active {
 	background-position: 0px -180px;}
