@@ -1,7 +1,9 @@
 var where = false;
 var map, getContext, canvas, now, my_hash;
 var my_point = false;
+var my_lat, my_lon;
 var my_point_drawn = false;
+var geolocated = false;
 var all_points = new Array();
 var TIME_TO_FADE_OUT_MS = 8000;
 var CIRCLE_SIZE = 8;
@@ -9,6 +11,11 @@ var CIRCLE_SIZE = 8;
 previous_points_length = all_points.length;
 
 $(function(){
+	if (navigator.geolocation) {
+  		navigator.geolocation.getCurrentPosition(location_found, no_geolocation);
+  	} else {
+  		no_geolocation();
+  	}
 	$(".i_exist_btn").click(say_that_i_exist);
 	draw_map();
 	canvas = document.getElementById("points")
@@ -21,19 +28,37 @@ $(function(){
   	// $(document).keyup(key_upped);
 });
 
+function location_found(loc){
+	geolocated = true;
+	where = true;
+	my_lat = loc.coords.latitude + "";
+	my_lon = loc.coords.longitude + "";
+}
+function no_geolocation() {
+	geolocated = false;
+}
+
 function say_that_i_exist() {
 	if (where === false || where === undefined) {
 		where = prompt("Where?");	
 	}
 
 	if (where) {
+		var post_data;
+		if (geolocated) {
+			post_data = {"where": "geolocated", "lat": my_lat, "lon": my_lon, 'csrf_token': CSRF_TOKEN};
+		} else {
+			post_data = {"where": where, 'csrf_token': CSRF_TOKEN};
+		}
+
 		$.ajax({
 			url: $(".i_exist_btn").attr("href"),
-			data: {"where": where, 'csrf_token': CSRF_TOKEN},
+			data: post_data,
 			type: "POST",
 			success: i_existed,
 		});	
 	}
+
 
 	return false;
 }
@@ -57,7 +82,7 @@ function i_existed(json) {
 		my_point.lon = 1.0*json.lon;
 		my_hash = json.hash;
 		my_point.birth_time = new Date().getTime();
-		update_xy(my_point);	
+		update_xy(my_point);
 	} else {
 		alert("Sorry, we don't know that location. Can you be more specific?");
 		where = false;
@@ -75,7 +100,7 @@ function draw_map() {
 }
 
 function draw_point(point, is_me) {
-	if (point.x !== undefined && point.y!== undefined) {
+	if (point.x !== undefined && point.y !== undefined) {
 		var my_grad = ctx.createRadialGradient(point.x,point.y,0,point.x,point.y,CIRCLE_SIZE);
 		var opacity = 1 - ((now-point.birth_time) / TIME_TO_FADE_OUT_MS);
 		if (is_me) {
