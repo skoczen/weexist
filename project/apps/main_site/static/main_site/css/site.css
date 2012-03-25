@@ -27,14 +27,14 @@ body {
 	font-size: 20px;
 }
 
-.button {
+.i_exist_btn {
 	width: 316px;
 	height: 316px; 
 	display: block;
 	text-decoration: none;
 	background-repeat: no-repeat;
-	background-image: url(button.png);}
+	background-image: url("../img/button.png");}
 
-.button:active {
+.i_exist_btn:active {
 	background-position: right; 
 	margin-left:-1px;}

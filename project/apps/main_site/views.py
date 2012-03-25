@@ -34,8 +34,12 @@ def home(request):
 def i_exist(request):
     if request.method == "POST":
         where =  request.POST["where"]
-        my_existence = Existence.objects.create(where=where)
-        send_pubnub_notification(my_existence)
-        return {"success": True, "lat": my_existence.lat, "lon": my_existence.lon}
+        try:
+            my_existence = Existence.objects.create(where=where)
+            send_pubnub_notification(my_existence)
+            return {"success": True, "lat": my_existence.lat, "lon": my_existence.lon}
+        except:
+            return {"success": False}
+
     else:
         return HttpResponseRedirect(reverse("main_site:home"))

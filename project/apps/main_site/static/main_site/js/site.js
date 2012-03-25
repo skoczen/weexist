@@ -1,6 +1,9 @@
 var where = false;
 var map;
 var ctx;
+var my_point = false;
+var all_points = new Array();
+var time_to_fade_out_ms = 20000;
 
 
 $(function(){
@@ -9,7 +12,8 @@ $(function(){
 	ctx = document.getElementById("points").getContext("2d");
 	ctx.canvas.width  = window.innerWidth;
   	ctx.canvas.height = window.innerHeight;
-
+  	animloop();
+  	$(window).resize(recalculate_points);
 });
 
 function say_that_i_exist() {
@@ -32,7 +36,15 @@ function say_that_i_exist() {
 }
 
 function i_existed(json) {
-	draw_point(1.0*json.lat, 1.0*json.lon, true);
+	if (json.success) {
+		my_point = {}
+		my_point.lat = 1.0*json.lat;
+		my_point.lon = 1.0*json.lon;
+		update_xy(my_point);	
+	} else {
+		alert("Sorry, we don't know that location. Can you be more specific?");
+	}
+	
 }
 
 function draw_map() {
@@ -44,32 +56,69 @@ function draw_map() {
 	map.setZoomRange(2, 3);
 }
 
-function draw_point(lat, lon, is_me) {
-	lat = lat*1.0;
-	lon = lon*1.0;
-	var l = new MM.Location(lat, lon);
-	xy = map.locationPoint(l);
-	var my_grad = ctx.createRadialGradient(xy.x,xy.y,2,xy.x,xy.y,10);
-	if (is_me) {
-		my_grad.addColorStop(0, '#d0d321');
-		// my_grad.addColorStop(0.9, '#019F62');
-		my_grad.addColorStop(1, 'rgba(255,255,255,0)');
-	} else {
-		my_grad.addColorStop(0, '#398147');
-		// my_grad.addColorStop(0.9, '#019F62');
-		my_grad.addColorStop(1, 'rgba(255,255,255,0)');
+function draw_point(point, is_me) {
+	if (point.x !== undefined && point.y!== undefined) {
+		var my_grad = ctx.createRadialGradient(point.x,point.y,2,point.x,point.y,10);
+		if (is_me) {
+			my_grad.addColorStop(0, '#d0d321');
+			// my_grad.addColorStop(0.9, '#019F62');
+			my_grad.addColorStop(1, 'rgba(255,255,255,0)');
+		} else {
+			my_grad.addColorStop(0, '#398147');
+			// my_grad.addColorStop(0.9, '#019F62');
+			my_grad.addColorStop(1, 'rgba(255,255,255,0)');
 
+		}
+
+		ctx.beginPath();
+	    ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI, false);
+	    ctx.fillStyle = my_grad;
+	    ctx.fill();
+
+	    // ctx.lineWidth = 5;
+	    // ctx.strokeStyle = "#FFF";
+	    // ctx.stroke();
+	    $(ctx).css("z-index", "800");
 	}
+}
 
-	ctx.beginPath();
-    ctx.arc(xy.x, xy.y, 10, 0, 2 * Math.PI, false);
-    ctx.fillStyle = my_grad;
-    ctx.fill();
+function animloop(){
+  requestAnimFrame(animloop);
+  render();
+}
 
-    // ctx.lineWidth = 5;
-    // ctx.strokeStyle = "#FFF";
-    // ctx.stroke();
-    $(ctx).css("z-index", "800");
+function render() {
+	ctx.width = ctx.width;
+	console.log("rendering");
+	if (my_point !== false) {
+		draw_point(my_point, true);	
+	}
+	for (var j=0; j<all_points.length; j++ ) {
+		draw_point(all_points, false);
+	}
+}
+
+function recalculate_points(){
+	update_xy(my_point);
+	for (var j=0; j<all_points.length; j++ ) {
+		update_xy(all_points);
+	}
+}
+
+function update_xy(pt) {
+	var l = new MM.Location(pt.lat, pt.lon);
+	var xy = map.locationPoint(l);
+	pt.x = xy.x;
+	pt.y = xy.y;
+}
+
+function add_to_all_points(lat, lon) {
+	var pt = {}
+	pt.lat = lat * 1.0;
+	pt.lon = lon * 1.0;
+	pt.birth_time = new Date().getTime();
+	update_xy(pt);
+	all_points.push(pt);
 }
 
 (function(){
@@ -82,8 +131,7 @@ function draw_point(lat, lon, is_me) {
                                          // OR WHEN PAGE CHANGES.
 
         callback   : function(message) { // RECEIVED A MESSAGE.
-            console.log(message)
-            draw_point(message.lat, message.lon, false);
+            add_to_all_points(message.lat, message.lon);
         },
 
         disconnect : function() {        // LOST CONNECTION.
@@ -108,3 +156,18 @@ function draw_point(lat, lon, is_me) {
     })
 
 })();
+
+
+
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       || 
+          window.webkitRequestAnimationFrame || 
+          window.mozRequestAnimationFrame    || 
+          window.oRequestAnimationFrame      || 
+          window.msRequestAnimationFrame     || 
+          function( callback ){
+            window.setTimeout(callback, 1000 / 5);
+          };
+})();
+
+
