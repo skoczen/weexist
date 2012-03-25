@@ -3,8 +3,8 @@ var map, getContext, canvas, now, my_hash;
 var my_point = false;
 var my_lat, my_lon;
 var my_point_drawn = false;
+var all_points = {};
 var geolocated = false;
-var all_points = new Array();
 var TIME_TO_FADE_OUT_MS = 8000;
 var CIRCLE_SIZE = 8;
 
@@ -138,10 +138,10 @@ function render() {
 	if (my_point !== false) {
 		draw_point(my_point, true);		
 	}
-	var temp_pts = new Array();
+	var temp_pts = {};
 	for (var key in all_points) {
 		if ( now < all_points[key].birth_time+TIME_TO_FADE_OUT_MS ) {
-			temp_pts.push(all_points[key]);
+			temp_pts[key] = all_points[key];
 		}
 	};
 	all_points = temp_pts;
