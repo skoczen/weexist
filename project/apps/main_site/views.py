@@ -21,6 +21,7 @@ def send_pubnub_notification(my_existence):
                     'lon' : my_existence.lon,
                     'lat' : my_existence.lat,
                     'where' : my_existence.where,
+                    'hash': my_existence.ip_hash,
                     # 'when': my_existence.when
                 }
     })
@@ -35,10 +36,12 @@ def i_exist(request):
     if request.method == "POST":
         where =  request.POST["where"]
         try:
-            my_existence = Existence.objects.create(where=where)
+            my_existence = Existence.objects.create(where=where, ip=request.META["REMOTE_ADDR"])
             send_pubnub_notification(my_existence)
-            return {"success": True, "lat": my_existence.lat, "lon": my_existence.lon}
-        except:
+            return {"success": True, "lat": my_existence.lat, "lon": my_existence.lon, "hash":my_existence.ip_hash}
+
+        except Exception, e:
+            print e
             return {"success": False}
 
     else:

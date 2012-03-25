@@ -1,3 +1,4 @@
+import hashlib
 import urllib2
 from urllib import quote_plus
 from django.db import models
@@ -7,6 +8,7 @@ class Existence(models.Model):
     where = models.CharField(max_length=255,blank=True, null=True)
     lat = models.FloatField(blank=True, null=True)
     lon = models.FloatField(blank=True, null=True)
+    ip = models.CharField(max_length=15, blank=True, null=True)
     lookup_attempted = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -21,3 +23,9 @@ class Existence(models.Model):
             self.lookup_attempted = True
 
         super(Existence, self).save(*args, **kwargs)
+
+    @property
+    def ip_hash(self):
+        m = hashlib.md5()
+        m.update(self.ip)
+        return m.hexdigest()

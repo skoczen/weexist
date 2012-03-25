@@ -1,9 +1,10 @@
 var where = false;
-var map, getContext, canvas, now;
+var map, getContext, canvas, now, my_hash;
 var my_point = false;
 var my_point_drawn = false;
 var all_points = new Array();
-var TIME_TO_FADE_OUT_MS = 10000;
+var TIME_TO_FADE_OUT_MS = 8000;
+var CIRCLE_SIZE = 8;
 
 previous_points_length = all_points.length;
 
@@ -16,18 +17,18 @@ $(function(){
   	ctx.canvas.height = window.innerHeight;
   	animloop();
   	$(window).resize(recalculate_points);
+  	// $(document).keydown(key_pressed);
+  	// $(document).keyup(key_upped);
 });
 
 function say_that_i_exist() {
-
-	var link = $(this);
 	if (where === false || where === undefined) {
 		where = prompt("Where?");	
 	}
 
 	if (where) {
 		$.ajax({
-			url: link.attr("href"),
+			url: $(".i_exist_btn").attr("href"),
 			data: {"where": where, 'csrf_token': CSRF_TOKEN},
 			type: "POST",
 			success: i_existed,
@@ -37,15 +38,29 @@ function say_that_i_exist() {
 	return false;
 }
 
+function key_pressed() { 
+	if (where) {
+		$(".i_exist_btn").addClass(".pressed");
+		say_that_i_exist();
+	}
+}
+function key_upped() {
+	if (where) {
+		$(".i_exist_btn").removeClass(".pressed");
+	}
+}
+
 function i_existed(json) {
 	if (json.success) {
 		my_point = {}
 		my_point.lat = 1.0*json.lat;
 		my_point.lon = 1.0*json.lon;
+		my_hash = json.hash;
 		my_point.birth_time = new Date().getTime();
 		update_xy(my_point);	
 	} else {
 		alert("Sorry, we don't know that location. Can you be more specific?");
+		where = false;
 	}
 	
 }
@@ -61,22 +76,21 @@ function draw_map() {
 
 function draw_point(point, is_me) {
 	if (point.x !== undefined && point.y!== undefined) {
-		var my_grad = ctx.createRadialGradient(point.x,point.y,2,point.x,point.y,10);
+		var my_grad = ctx.createRadialGradient(point.x,point.y,0,point.x,point.y,CIRCLE_SIZE);
 		var opacity = 1 - ((now-point.birth_time) / TIME_TO_FADE_OUT_MS);
-
 		if (is_me) {
-			my_grad.addColorStop(0, '#d0d321');
-			// my_grad.addColorStop(0.9, '#019F62');
-			my_grad.addColorStop(opacity, 'rgba(255,255,255,0)');
+			my_grad.addColorStop(0, 'rgba(208,211,33,1)');
+			my_grad.addColorStop(0.8, 'rgba(208,211,33,0.8)');
+			my_grad.addColorStop(1, 'rgba(208,211,33,0.2)');
 		} else {
-			my_grad.addColorStop(0, '#398147');
-			// my_grad.addColorStop(0.9, '#019F62');
-			my_grad.addColorStop(opacity, 'rgba(255,255,255,0)');
+			my_grad.addColorStop(0, 'rgba(57,129,71,1)');
+			my_grad.addColorStop(0.8, 'rgba(57,129,71,0.8)');
+			my_grad.addColorStop(1, 'rgba(57,129,71,0.2)');
 
 		}
 
 		ctx.beginPath();
-	    ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI, false);
+	    ctx.arc(point.x, point.y, opacity*CIRCLE_SIZE, 0, 2 * Math.PI, false);
 	    ctx.fillStyle = my_grad;
 	    ctx.fill();
 
@@ -99,19 +113,23 @@ function render() {
 	if (my_point !== false) {
 		draw_point(my_point, true);		
 	}
-	for (var j=0; j<all_points.length; j++ ) {
-		if ( now > all_points[j].birth_time+TIME_TO_FADE_OUT_MS ) {
-			delete all_points[j];
+	var temp_pts = new Array();
+	for (var key in all_points) {
+		if ( now < all_points[key].birth_time+TIME_TO_FADE_OUT_MS ) {
+			temp_pts.push(all_points[key]);
 		}
-		draw_point(all_points, false);
+	};
+	all_points = temp_pts;
+	for (var key in all_points) {
+		draw_point(all_points[key], false);	
 	}
 
 }
 
 function recalculate_points(){
 	update_xy(my_point);
-	for (var j=0; j<all_points.length; j++ ) {
-		update_xy(all_points);
+	for (var key in all_points) {
+		update_xy(all_points[key]);
 	}
 	my_point_drawn = false;
 	previous_points_length = -1;
@@ -124,13 +142,15 @@ function update_xy(pt) {
 	pt.y = xy.y;
 }
 
-function add_to_all_points(lat, lon) {
-	var pt = {}
-	pt.lat = lat * 1.0;
-	pt.lon = lon * 1.0;
-	pt.birth_time = new Date().getTime();
-	update_xy(pt);
-	all_points.push(pt);
+function add_to_all_points(lat, lon, hash) {
+	if (hash != my_hash) {
+		var pt = {}
+		pt.lat = lat * 1.0;
+		pt.lon = lon * 1.0;
+		pt.birth_time = new Date().getTime();
+		update_xy(pt);
+		all_points[hash] = pt;	
+	}
 }
 
 (function(){
@@ -143,7 +163,7 @@ function add_to_all_points(lat, lon) {
                                          // OR WHEN PAGE CHANGES.
 
         callback   : function(message) { // RECEIVED A MESSAGE.
-            add_to_all_points(message.lat, message.lon);
+            add_to_all_points(message.lat, message.lon, message.hash);
         },
 
         disconnect : function() {        // LOST CONNECTION.
@@ -178,7 +198,7 @@ window.requestAnimFrame = (function(){
   //         window.oRequestAnimationFrame      || 
   //         window.msRequestAnimationFrame     || 
   return function( callback ){
-            window.setTimeout(callback, 1000 / 8);
+            window.setTimeout(callback, 1000 / 15);
           };
 })();
 

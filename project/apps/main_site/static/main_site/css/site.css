@@ -21,10 +21,6 @@ body {
 	text-align: center;
 	z-index: 500;
 }
-.i_exist_actions a.i_exist_btn {
-	color: #FFF;
-	font-size: 20px;
-}
 
 .i_exist_btn {
 	margin: 0px auto;
@@ -41,6 +37,6 @@ body {
 	background-position: 0px -90px;
 }
 
-.i_exist_btn:active {
+.i_exist_btn:active, .i_exist_btn.pressed {
 	background-position: 0px -180px;
 }
