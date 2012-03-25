@@ -1,9 +1,9 @@
 body {
 	background-color: #000;
-	font-family: "Unibody8Bold";
+	font-family: "Unibody8SmallCaps";
 }
 input {
-	font-family: "Unibody8Bold";
+	font-family: "Unibody8Black";
 }
 #map, #points {
 	position: absolute;

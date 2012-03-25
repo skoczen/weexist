@@ -36,7 +36,11 @@ def i_exist(request):
     if request.method == "POST":
         where =  request.POST["where"]
         try:
-            my_existence = Existence.objects.create(where=where, ip=request.META["REMOTE_ADDR"])
+            if "lat" in request.POST:
+                my_existence = Existence.objects.create(where=where, ip=request.META["REMOTE_ADDR"], lat=float(request.POST["lat"]), lon=float(request.POST["lon"]))
+            else:
+                my_existence = Existence.objects.create(where=where, ip=request.META["REMOTE_ADDR"])
+
             send_pubnub_notification(my_existence)
             return {"success": True, "lat": my_existence.lat, "lon": my_existence.lon, "hash":my_existence.ip_hash}
 

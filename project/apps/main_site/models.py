@@ -13,13 +13,14 @@ class Existence(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.lookup_attempted:
-            response = urllib2.urlopen(
-                "http://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=1&q=%s" % 
-                (quote_plus(self.where),)
-                )
-            address = eval(response.read())[0]
-            self.lat = address["lat"]
-            self.lon = address["lon"]
+            if not self.lat and not self.lon:
+                response = urllib2.urlopen(
+                    "http://nominatim.openstreetmap.org/search?format=json&addressdetails=0&limit=1&q=%s" % 
+                    (quote_plus(self.where),)
+                    )
+                address = eval(response.read())[0]
+                self.lat = address["lat"]
+                self.lon = address["lon"]
             self.lookup_attempted = True
 
         super(Existence, self).save(*args, **kwargs)

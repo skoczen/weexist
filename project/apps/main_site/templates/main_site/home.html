@@ -13,7 +13,7 @@
 {% block js %}
 <script>
 var MAP_BASE_URL = "{{STATIC_URL}}map/tile/1.0.0/we_exist_single"
-var CSRF_TOKEN = "{% csrf_token %}";
+var CSRF_TOKEN = "{{ csrf_token }}";
 </script>
 {{block.super}}
 {% compress js %}
@@ -26,6 +26,7 @@ var CSRF_TOKEN = "{% csrf_token %}";
 
 {% block content %}
 <div class="exist_block"></div>
+<!-- <div class="where"> -->
 <canvas id="points"></canvas>
 <div class="map" id="map"></div>
 <div class="i_exist_actions">
