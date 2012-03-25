@@ -1,5 +1,6 @@
 import optparse
 from django.core.management.base import BaseCommand, CommandError
+from os import makedirs
 from os.path import abspath, dirname, join
 from sys import argv
 import urllib2
@@ -51,6 +52,7 @@ class Command(BaseCommand):
 
         if do_download:
             print "Downloading manifest..."
+            makedirs(join(project_root, settings.STATIC_ROOT, CACHE_DIR))
             u = urllib2.urlopen("%s%s/%s" % (settings.STATIC_URL, CACHE_DIR, MANIFEST_FILENAME))
             localFile = open(join(project_root, settings.STATIC_ROOT, CACHE_DIR, MANIFEST_FILENAME), 'w+')
             localFile.write(u.read())
