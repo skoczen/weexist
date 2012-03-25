@@ -3,12 +3,7 @@ var map, getContext, canvas, now, my_hash;
 var my_point = false;
 var my_lat, my_lon;
 var my_point_drawn = false;
-<<<<<<< HEAD
-var all_points = {};
-=======
 var geolocated = false;
-var all_points = new Array();
->>>>>>> master
 var TIME_TO_FADE_OUT_MS = 8000;
 var CIRCLE_SIZE = 8;
 
