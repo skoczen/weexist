@@ -26,3 +26,15 @@ body {
 	color: #FFF;
 	font-size: 20px;
 }
+
+.button {
+	width: 316px;
+	height: 316px; 
+	display: block;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-image: url(button.png);}
+
+.button:active {
+	background-position: right; 
+	margin-left:-1px;}
