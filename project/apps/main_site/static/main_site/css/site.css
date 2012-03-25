@@ -16,8 +16,7 @@ body {
 	position: absolute;
 	bottom: 20px;
 	width: 100%;
-	height: 50px;
-	background: rgba(0,0,0,0.4);
+	height: 100px;
 	color: #FFF;
 	text-align: center;
 	z-index: 500;
@@ -29,13 +28,16 @@ body {
 
 
 .i_exist_btn {
+	margin: 0px auto;
 	width: 100px;
 	height: 100px; 
 	display: block;
 	text-decoration: none;
 	background-repeat: no-repeat;
-	background-image: url("../img/button.png");}
+	background-image: url("../img/button.png");
+}
 
 .i_exist_btn:active {
 	background-position: right; 
-	margin-left:-1px;}
+	/*margin-left:-1px;*/
+}

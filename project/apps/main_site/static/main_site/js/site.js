@@ -1,15 +1,17 @@
 var where = false;
-var map;
-var ctx;
+var map, getContext, canvas, now;
 var my_point = false;
+var my_point_drawn = false;
 var all_points = new Array();
-var time_to_fade_out_ms = 20000;
+var TIME_TO_FADE_OUT_MS = 10000;
 
+previous_points_length = all_points.length;
 
 $(function(){
 	$(".i_exist_btn").click(say_that_i_exist);
 	draw_map();
-	ctx = document.getElementById("points").getContext("2d");
+	canvas = document.getElementById("points")
+	ctx = canvas.getContext("2d");
 	ctx.canvas.width  = window.innerWidth;
   	ctx.canvas.height = window.innerHeight;
   	animloop();
@@ -40,6 +42,7 @@ function i_existed(json) {
 		my_point = {}
 		my_point.lat = 1.0*json.lat;
 		my_point.lon = 1.0*json.lon;
+		my_point.birth_time = new Date().getTime();
 		update_xy(my_point);	
 	} else {
 		alert("Sorry, we don't know that location. Can you be more specific?");
@@ -59,14 +62,16 @@ function draw_map() {
 function draw_point(point, is_me) {
 	if (point.x !== undefined && point.y!== undefined) {
 		var my_grad = ctx.createRadialGradient(point.x,point.y,2,point.x,point.y,10);
+		var opacity = 1 - ((now-point.birth_time) / TIME_TO_FADE_OUT_MS);
+
 		if (is_me) {
 			my_grad.addColorStop(0, '#d0d321');
 			// my_grad.addColorStop(0.9, '#019F62');
-			my_grad.addColorStop(1, 'rgba(255,255,255,0)');
+			my_grad.addColorStop(opacity, 'rgba(255,255,255,0)');
 		} else {
 			my_grad.addColorStop(0, '#398147');
 			// my_grad.addColorStop(0.9, '#019F62');
-			my_grad.addColorStop(1, 'rgba(255,255,255,0)');
+			my_grad.addColorStop(opacity, 'rgba(255,255,255,0)');
 
 		}
 
@@ -75,9 +80,6 @@ function draw_point(point, is_me) {
 	    ctx.fillStyle = my_grad;
 	    ctx.fill();
 
-	    // ctx.lineWidth = 5;
-	    // ctx.strokeStyle = "#FFF";
-	    // ctx.stroke();
 	    $(ctx).css("z-index", "800");
 	}
 }
@@ -88,14 +90,22 @@ function animloop(){
 }
 
 function render() {
-	ctx.width = ctx.width;
-	console.log("rendering");
+	now = new Date().getTime();
+	canvas.width = canvas.width;
+
+	if (now > my_point.birth_time+TIME_TO_FADE_OUT_MS) {
+		my_point = false;
+	}
 	if (my_point !== false) {
-		draw_point(my_point, true);	
+		draw_point(my_point, true);		
 	}
 	for (var j=0; j<all_points.length; j++ ) {
+		if ( now > all_points[j].birth_time+TIME_TO_FADE_OUT_MS ) {
+			delete all_points[j];
+		}
 		draw_point(all_points, false);
 	}
+
 }
 
 function recalculate_points(){
@@ -103,6 +113,8 @@ function recalculate_points(){
 	for (var j=0; j<all_points.length; j++ ) {
 		update_xy(all_points);
 	}
+	my_point_drawn = false;
+	previous_points_length = -1;
 }
 
 function update_xy(pt) {
@@ -160,13 +172,13 @@ function add_to_all_points(lat, lon) {
 
 
 window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       || 
-          window.webkitRequestAnimationFrame || 
-          window.mozRequestAnimationFrame    || 
-          window.oRequestAnimationFrame      || 
-          window.msRequestAnimationFrame     || 
-          function( callback ){
-            window.setTimeout(callback, 1000 / 5);
+  // return  window.requestAnimationFrame       || 
+  //         window.webkitRequestAnimationFrame || 
+  //         window.mozRequestAnimationFrame    || 
+  //         window.oRequestAnimationFrame      || 
+  //         window.msRequestAnimationFrame     || 
+  return function( callback ){
+            window.setTimeout(callback, 1000 / 8);
           };
 })();
 
