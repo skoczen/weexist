@@ -42,6 +42,7 @@ class Command(BaseCommand):
         self.AWS_STORAGE_BUCKET_NAME = settings.AWS_STORAGE_BUCKET_NAME
 
         project_root =  abspath(dirname(argv[0]))
+        makedirs(join(project_root, settings.STATIC_ROOT, CACHE_DIR))
         do_download = options.get('force')
 
         try:
@@ -52,7 +53,6 @@ class Command(BaseCommand):
 
         if do_download:
             print "Downloading manifest..."
-            makedirs(join(project_root, settings.STATIC_ROOT, CACHE_DIR))
             u = urllib2.urlopen("%s%s/%s" % (settings.STATIC_URL, CACHE_DIR, MANIFEST_FILENAME))
             localFile = open(join(project_root, settings.STATIC_ROOT, CACHE_DIR, MANIFEST_FILENAME), 'w+')
             localFile.write(u.read())
