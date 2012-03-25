@@ -3,7 +3,7 @@ from envs.common import *
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-EMAIL_BACKEND = 'django_ses.SESBackend'
+# EMAIL_BACKEND = 'django_ses.SESBackend'
 
 STATIC_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
 COMPRESS_URL = STATIC_URL
