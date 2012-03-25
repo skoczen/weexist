@@ -40,7 +40,7 @@ function no_geolocation() {
 
 function say_that_i_exist() {
 	if (where === false || where === undefined) {
-		where = prompt("Where?");	
+		where = prompt("What city and country are you in?");	
 	}
 
 	if (where) {
