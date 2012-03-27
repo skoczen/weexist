@@ -104,9 +104,9 @@ function draw_point(point, is_me) {
 		var my_grad = ctx.createRadialGradient(point.x,point.y,0,point.x,point.y,CIRCLE_SIZE);
 		var opacity = 1 - ((now-point.birth_time) / TIME_TO_FADE_OUT_MS);
 		if (is_me) {
-			my_grad.addColorStop(0, 'rgba(208,211,33,1)');
-			my_grad.addColorStop(0.8, 'rgba(208,211,33,0.8)');
-			my_grad.addColorStop(1, 'rgba(208,211,33,0.2)');
+			my_grad.addColorStop(0, 'rgba(84,211,194,1)');
+			my_grad.addColorStop(0.8, 'rgba(84,211,194,0.8)');
+			my_grad.addColorStop(1, 'rgba(84,211,194,0.2)');
 		} else {
 			my_grad.addColorStop(0, 'rgba(57,129,71,1)');
 			my_grad.addColorStop(0.8, 'rgba(57,129,71,0.8)');
