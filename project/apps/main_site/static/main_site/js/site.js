@@ -84,7 +84,7 @@ function i_existed(json) {
 		my_point.birth_time = new Date().getTime();
 		update_xy(my_point);
 	} else {
-		alert("Sorry, we don't know that location. Can you be more specific?");
+		alert("We can't find you. Where are you?");
 		where = false;
 	}
 	

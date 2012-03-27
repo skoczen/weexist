@@ -7,10 +7,13 @@
 {% endcompress %}
 {% endblock %}
 
+
 {% block title %}togetheralone{% endblock %}
-{% block description %}Are you alone?{% endblock %}
+{% block description %}are you alone?{% endblock %}
+
 
 {% block js %}
+
 <script>
 var MAP_BASE_URL = "{{STATIC_URL}}map/tile/1.0.0/we_exist_single"
 var CSRF_TOKEN = "{{ csrf_token }}";
@@ -25,6 +28,16 @@ var CSRF_TOKEN = "{{ csrf_token }}";
 
 
 {% block content %}
+
+
+<!--this is where Anastasia starts to fuck everything up-->
+<div id="twitter"><a href="https://twitter.com/share?url=https%3A%2F%2Fdev.twitter.com%2Fpages%2Ftweet-button" data-count="none"></a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></div>
+
+<div id="facebook"><a href="https://www.facebook.com/sharer.php?u=http%3A%2F%2Fwww.togetheralone.org%2F&t=are%20you%20alone?"></a></div>
+<!--end fuckup-->
+
+
 <div class="exist_block"></div>
 <!-- <div class="where"> -->
 <canvas id="points"></canvas>
@@ -32,6 +45,7 @@ var CSRF_TOKEN = "{{ csrf_token }}";
 <div class="i_exist_actions">
 	<a href="{% url main_site:i_exist %}" class="i_exist_btn" ></a>
 </div>
+<div id="bar"></div>
 <div pub-key="pub-141dae41-5126-40f9-bf3b-61e4f8676853" sub-key="sub-da7f8e66-7602-11e1-8e7f-3157f0c9d5f9" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
 <script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
 {% endblock %}

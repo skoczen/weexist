@@ -5,6 +5,7 @@ body {
 input {
 	font-family: "Unibody8Black";
 }
+
 #map, #points {
 	position: absolute;
 	top: 0px;
@@ -44,3 +45,48 @@ input {
 .i_exist_btn:active, .i_exist_btn.pressed {
 	background-position: 0px -180px;
 }
+
+/*#bar {
+	position: absolute;
+	background-color: #808080;
+	bottom:0px;
+	height: 60px;
+	width: 100%;
+	opacity: 0.1;
+	-moz-opacity: 0.1;
+	filter:alpha(opacity=1);
+	border-top: 1px solid #010133;
+	z-index: 400;
+}*/
+
+#twitter a {
+	display: block;
+    padding: 2px 5px 2px 2px;
+    border: none;
+	background-image: url("../img/twitter.png");
+	background-repeat: no-repeat;
+	opacity: 0.7;
+	-moz-opacity: 0.7;
+	filter:alpha(opacity=7);
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	right:0px;
+	bottom: 75px;
+	z-index: 700;
+
+}
+#facebook a {display: block;
+    padding: 2px 5px 2px 2px;
+    border: none;
+	background-image: url("../img/facebook.png");
+	background-repeat: no-repeat;
+	opacity: 0.7;
+	-moz-opacity: 0.7;
+	filter:alpha(opacity=7);
+	width: 30px;
+	height: 30px;
+	position: absolute;
+	right:0px;
+	bottom: 45px;
+	z-index: 700;}
